@@ -106,10 +106,14 @@ def retry_api_execute(options, http_request):
 
 def translate_status(instance_status):
 	"Returns on | off | unknown."
-	if instance_status == "RUNNING":
+	if instance_status in ["RUNNING", "STOPPING"]:
 		return "on"
-	elif instance_status == "TERMINATED":
+	elif instance_status in ["TERMINATED", "PROVISIONING", "STAGING"]:
 		return "off"
+	elif instance_status in ["REPAIRING", "SUSPENDING", "SUSPENDED"]:
+		logging.error("Instance status is " + instance_status
+			+ ". User intervention required")
+		return "unknown"
 	return "unknown"
 
 
